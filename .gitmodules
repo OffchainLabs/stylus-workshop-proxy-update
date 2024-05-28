@@ -1,0 +1,12 @@
+[submodule "proxy/lib/forge-std"]
+	path = proxy/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "proxy/lib/openzeppelin-contracts"]
+	path = proxy/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "erc20-sol/lib/forge-std"]
+	path = erc20-sol/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "erc20-sol/lib/openzeppelin-contracts"]
+	path = erc20-sol/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
