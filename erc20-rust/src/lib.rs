@@ -15,7 +15,7 @@ use crate::erc20::{Erc20, Erc20Params, Erc20Error};
 
 /// Initializes a custom, global allocator for Rust programs compiled to WASM.
 #[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
 /// Immutable definitions
 struct MyTokenParams;

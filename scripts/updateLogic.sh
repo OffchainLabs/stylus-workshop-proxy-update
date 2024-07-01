@@ -45,16 +45,9 @@ cd erc20-rust
 # Prepare transactions data
 cargo stylus deploy -e $RPC_URL --private-key $PRIVATE_KEY > $DEPLOY_CONTRACT_RESULT_FILE
 
-# Get contract address (last "sed" command removes the color codes of the output)
-# (Note: last regex obtained from https://stackoverflow.com/a/51141872)
-erc20_contract_address_str=$(cat $DEPLOY_CONTRACT_RESULT_FILE | sed -n 2p)
-if ! [[ $erc20_contract_address_str == *0x* ]]
-then
-    # When the program needs activation, the output of the command is slightly different
-    erc20_contract_address_str=$(cat $DEPLOY_CONTRACT_RESULT_FILE | sed -n 3p)
-fi
-erc20_contract_address_array=($erc20_contract_address_str)
-erc20_contract_address=$(echo ${erc20_contract_address_array[2]} | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')
+# Get contract address (the "sed" command removes the color codes of the output)
+# (Note: sed regex obtained from https://stackoverflow.com/a/51141872)
+erc20_contract_address=$(cat $DEPLOY_CONTRACT_RESULT_FILE | grep -E 0x | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | grep -Eo '\b0x\w*')
 rm $DEPLOY_CONTRACT_RESULT_FILE
 
 # Final result

@@ -1,11 +1,10 @@
 //! Implementation of the ERC-20 standard
-//! (Based on the implementation at https://github.com/OffchainLabs/stylus-sdk-rs/blob/stylus/examples/erc20/src/erc20.rs)
 //!
 //! The eponymous [`Erc20`] type provides all the standard methods,
 //! and is intended to be inherited by other contract types.
 //!
 //! You can configure the behavior of [`Erc20`] via the [`Erc20Params`] trait,
-//! which allows specifying the name, symbol, and token uri.
+//! which allows specifying the name, symbol, and decimals of the token.
 //!
 //! Note that this code is unaudited and not fit for production use.
 
@@ -162,26 +161,20 @@ impl<T: Erc20Params> Erc20<T> {
         T::DECIMALS
     }
 
+    /// Total supply of tokens
+    pub fn total_supply(&self) -> U256 {
+        self.total_supply.get()
+    }
+
     /// Balance of `address`
-    pub fn balance_of(&self, address: Address) -> U256 {
-        self.balances.get(address)
+    pub fn balance_of(&self, owner: Address) -> U256 {
+        self.balances.get(owner)
     }
 
     /// Transfers `value` tokens from msg::sender() to `to`
     pub fn transfer(&mut self, to: Address, value: U256) -> Result<bool, Erc20Error> {
         self._transfer(msg::sender(), to, value)?;
         Ok(true)
-    }
-
-    /// Approves the spenditure of `value` tokens of msg::sender() to `spender`
-    pub fn approve(&mut self, spender: Address, value: U256) -> bool {
-        self.allowances.setter(msg::sender()).insert(spender, value);
-        evm::log(Approval {
-            owner: msg::sender(),
-            spender,
-            value,
-        });
-        true
     }
 
     /// Transfers `value` tokens from `from` to `to`
@@ -207,11 +200,22 @@ impl<T: Erc20Params> Erc20<T> {
 
         // Decreases allowance
         allowance.set(old_allowance - value);
-        
+
         // Calls the internal transfer function
         self._transfer(from, to, value)?;
 
         Ok(true)
+    }
+
+    /// Approves the spenditure of `value` tokens of msg::sender() to `spender`
+    pub fn approve(&mut self, spender: Address, value: U256) -> bool {
+        self.allowances.setter(msg::sender()).insert(spender, value);
+        evm::log(Approval {
+            owner: msg::sender(),
+            spender,
+            value,
+        });
+        true
     }
 
     /// Returns the allowance of `spender` on `owner`'s tokens
