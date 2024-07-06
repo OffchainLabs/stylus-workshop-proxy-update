@@ -47,7 +47,7 @@ cargo stylus deploy -e $RPC_URL --private-key $PRIVATE_KEY > $DEPLOY_CONTRACT_RE
 
 # Get contract address (the "sed" command removes the color codes of the output)
 # (Note: sed regex obtained from https://stackoverflow.com/a/51141872)
-erc20_contract_address=$(cat $DEPLOY_CONTRACT_RESULT_FILE | grep -E 0x | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | grep -Eo '\b0x\w*')
+erc20_contract_address=$(cat $DEPLOY_CONTRACT_RESULT_FILE | grep -E 0x | head -1 | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | grep -Eo '\b0x\w*')
 rm $DEPLOY_CONTRACT_RESULT_FILE
 
 # Final result
